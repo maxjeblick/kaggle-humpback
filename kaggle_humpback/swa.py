@@ -11,7 +11,7 @@ import torch
 from datasets import get_dataloader
 from transforms import get_transform
 from tasks import get_task
-import utils.config
+import kaggle_humpback.utils.config as config
 import utils.checkpoint
 import utils.swa as swa
 

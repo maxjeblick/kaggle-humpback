@@ -10,9 +10,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models import get_model
-from losses import get_loss
-from transforms import from_norm_bgr
+from kaggle_humpback.models import get_model
+from kaggle_humpback.losses import get_loss
 
 
 class ArcModule(nn.Module):

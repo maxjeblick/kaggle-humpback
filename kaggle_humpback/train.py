@@ -13,14 +13,14 @@ import torch
 import torch.nn.functional as F
 from tensorboardX import SummaryWriter
 
-from datasets import get_dataloader
-from transforms import get_transform
-from tasks import get_task
-from optimizers import get_optimizer
-from schedulers import get_scheduler
-import utils
-import utils.config
-import utils.checkpoint
+from kaggle_humpback.datasets import get_dataloader
+from kaggle_humpback.transforms import get_transform
+from kaggle_humpback.tasks import get_task
+from kaggle_humpback.optimizers import get_optimizer
+from kaggle_humpback.schedulers import get_scheduler
+import kaggle_humpback.utils as utils
+import kaggle_humpback.utils.config as config
+import kaggle_humpback.utils.checkpoint as checkpoint
 
 
 def evaluate_single_epoch(config, task, dataloader, epoch,
@@ -170,7 +170,7 @@ def train(config, task, dataloaders, optimizer, scheduler, writer, start_epoch):
           scheduler.step()
 
         if epoch % config.train.save_checkpoint_epoch == 0:
-            utils.checkpoint.save_checkpoint(config, task.get_model(), optimizer,
+            checkpoint.save_checkpoint(config, task.get_model(), optimizer,
                                              epoch, 0, keep=10)
 
         scores = scores[-20:]
@@ -178,14 +178,14 @@ def train(config, task, dataloaders, optimizer, scheduler, writer, start_epoch):
         writer.add_scalar('dev/score_mavg', score_mavg, epoch)
         if score > best_score:
             best_score = score
-            utils.checkpoint.save_checkpoint(config, task.get_model(), optimizer,
+            checkpoint.save_checkpoint(config, task.get_model(), optimizer,
                                              epoch, keep=10, name='best.score')
-            utils.checkpoint.copy_last_n_checkpoints(config, 10, 'best.score.{:04d}.pth')
+            checkpoint.copy_last_n_checkpoints(config, 10, 'best.score.{:04d}.pth')
         if score_mavg > best_score_mavg:
             best_score_mavg = score_mavg
-            utils.checkpoint.save_checkpoint(config, task.get_model(), optimizer,
+            checkpoint.save_checkpoint(config, task.get_model(), optimizer,
                                              epoch, keep=10, name='best.score_mavg')
-            utils.checkpoint.copy_last_n_checkpoints(config, 10, 'best.score_mavg.{:04d}.pth')
+            checkpoint.copy_last_n_checkpoints(config, 10, 'best.score_mavg.{:04d}.pth')
     return {'score': best_score, 'score_mavg': best_score_mavg}
 
 
@@ -235,10 +235,10 @@ def main():
     if args.config_file is None:
       raise Exception('no configuration file')
 
-    config = utils.config.load(args.config_file)
-    pprint.PrettyPrinter(indent=2).pprint(config)
-    utils.prepare_train_directories(config)
-    run(config)
+    config_ = config.load(args.config_file)
+    pprint.PrettyPrinter(indent=2).pprint(config_)
+    utils.prepare_train_directories(config_)
+    run(config_)
     print('success!')
 
 
