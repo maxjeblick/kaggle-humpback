@@ -4,10 +4,6 @@ from __future__ import print_function
 
 
 from torch.utils.data import DataLoader
-import torch.utils.data.sampler
-
-from .landmark import LandmarkDataset
-from .identification import IdentificationDataset
 
 
 def get_dataset(config, split, transform=None):
